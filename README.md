@@ -42,3 +42,60 @@ The application utilizes the **paraphrase-MiniLM-L6-v2** model from the Sentence
 
 ## Screenshot
 ![Admission Bot Screenshot](Screen1.png)
+
+
+
+# Paraphrase-MiniLM-L6-v2 Model Setup
+
+This guide explains how to download and set up the "paraphrase-MiniLM-L6-v2" model locally for your projects.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- Python 3.6 or higher
+- `pip` installed
+- `transformers` library from Hugging Face
+
+## Step 1: Install the Transformers Library
+
+To install the `transformers` library, run the following command:
+
+```bash
+pip install transformers
+```
+
+## Step 2: Download the Model Locally
+You can download the "paraphrase-MiniLM-L6-v2" model using the following Python code:
+
+```base
+from transformers import AutoModel, AutoTokenizer
+```
+
+### Define the model name
+model_name = "sentence-transformers/paraphrase-MiniLM-L6-v2"
+
+### Load the tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+
+### Save the model and tokenizer locally
+tokenizer.save_pretrained("LLM/paraphrase-MiniLM-L6-v2")
+model.save_pretrained("LLM/paraphrase-MiniLM-L6-v2")
+
+## Step 3: Load the Model from Local Directory
+After downloading, you can load the model and tokenizer from the local directory using the following code:
+
+```bash
+from transformers import AutoModel, AutoTokenizer
+```
+
+### Load the tokenizer and model from the local directory
+tokenizer = AutoTokenizer.from_pretrained("LLM/paraphrase-MiniLM-L6-v2")
+model = AutoModel.from_pretrained("LLM/paraphrase-MiniLM-L6-v2")
+
+## Additional Notes
+- Ensure you have enough disk space for the model files.
+- The downloaded files will include model weights, configuration, and tokenizer files.
+- If you are running in an environment without internet access, download the model in an environment with internet access first, then copy the files to your target environment.
+- Now you're all set to use the "paraphrase-MiniLM-L6-v2" model locally for your paraphrasing tasks!
