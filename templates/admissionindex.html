@@ -1,154 +1,153 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admission Voice Bot</title>
-        <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 20px;
-                background-color: #f4f7f8;
-                color: #333;
-            }
-            h1 {
-                text-align: center;
-                margin-bottom: 20px;
-                color: #007BFF;
-            }
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 20px;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-            button {
-                display: block;
-                width: 50%;
-                margin: 10px 0;
-                padding: 10px;
-                font-size: 16px;
-                font-weight: bold;
-                color: white;
-                background-color: #007BFF;
-                border: none;
-                border-radius: 50px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-            #stop-btn{
-                background-color: #ff4800;   
-            }
-            button:hover {
-                background-color: #0056b3;
-            }
-            #stop-btn:hover{
-                background-color: #882e0a;   
-            }
-            #query-output {
-                margin-top: 20px;
-                /* text-align: center; */
-                font-size: 18px;
-                color: #333;
-            }
-            #results {
-                margin-top: 30px;
-                padding: 15px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                background-color: #f9f9f9;
-            }
-            .admission-result {
-                margin-bottom: 20px;
-                padding: 10px;
-                border: 1px solid #e0e0e0;
-                border-radius: 5px;
-                background-color: #fff;
-            }
-            .admission-text {
-                font-size: 16px;
-                margin: 0;
-                color: #333;
-            }
-            .admission-info {
-                font-style: italic;
-                color: gray;
-                margin-top: 5px;
-            }
-            .tts-btn {
-                margin-top: 10px;
-                background-color: #28a745;
-            }
-            .tts-btn:hover {
-                background-color: #218838;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>AI Admission Bot - University of Sheffield, UK</h1>
-        <div class="container">
-            <center>
-                <button id="voice-btn">Start Conversation</button>
-                <button id="stop-btn">End Conversation</button>
-            </center>
-            <p id="query-output"></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Voice Bot</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f8;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            display: block;
+            width: 50%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #stop-btn {
+            background-color: #ff4800;   
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #stop-btn:hover {
+            background-color: #882e0a;   
+        }
+        #query-output {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .admission-result {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .admission-text {
+            font-size: 16px;
+            margin: 0;
+            color: #333;
+        }
+        .admission-info {
+            font-style: italic;
+            color: gray;
+            margin-top: 5px;
+        }
+        .tts-btn {
+            margin-top: 10px;
+            background-color: #28a745;
+        }
+        .tts-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Admission Bot - University of Sheffield, UK</h1>
+    <div class="container">
+        <center>
+            <button id="voice-btn">Start Conversation</button>
+            <button id="stop-btn">End Conversation</button>
+        </center>
+        <p id="query-output"></p>
+        <div id="results"></div>
+    </div>
 
-            <div id="results"></div>
-        </div>
+    <script>
+        const voiceBtn = document.getElementById('voice-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const queryOutput = document.getElementById('query-output');
+        const resultsContainer = document.getElementById('results');
 
-        <script>
-            const voiceBtn = document.getElementById('voice-btn');
-            const stopBtn = document.getElementById('stop-btn');
-            const queryOutput = document.getElementById('query-output');
-            const resultsContainer = document.getElementById('results');
-        
-            // Use Web Speech API for voice input
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-        
-            // Load voices
-            let voices = [];
-            const loadVoices = () => {
-                voices = window.speechSynthesis.getVoices();
-            };
-        
-            loadVoices();
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = loadVoices;
+        // Use Web Speech API for voice input
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        // Load voices
+        let voices = [];
+        const loadVoices = () => {
+            voices = window.speechSynthesis.getVoices();
+        };
+
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        // Set the desired voice (UK English Female)
+        let selectedVoice = voices.find(voice => voice.name === 'UK English Female');
+
+        let conversationActive = false; // Flag to track if conversation is active
+
+        voiceBtn.addEventListener('click', () => {
+            if (!conversationActive) {
+                conversationActive = true; // Set conversation to active
+                const greeting = new SpeechSynthesisUtterance("Hello, feel free to ask your query.");
+                greeting.voice = selectedVoice; // Set the selected voice
+                window.speechSynthesis.speak(greeting);
+                recognition.start();
             }
-        
-            // Set the desired voice (UK English Female)
-            let selectedVoice = voices.find(voice => voice.name === 'UK English Female');
-        
-            let conversationActive = false; // Flag to track if conversation is active
-        
-            voiceBtn.addEventListener('click', () => {
-                if (!conversationActive) {
-                    conversationActive = true; // Set conversation to active
-                    const greeting = new SpeechSynthesisUtterance("Hello, feel free to ask your query.");
-                    greeting.voice = selectedVoice; // Set the selected voice
-                    window.speechSynthesis.speak(greeting);
-                    recognition.start();
-                }
-            });
-        
-            stopBtn.addEventListener('click', endConversation);
-            
-            recognition.addEventListener('result', (event) => {
-                const query = event.results[0][0].transcript;
-                queryOutput.textContent = `You said: ${query}`;
-        
-                // Check for exit commands
-                if (['stop', 'exit', 'end', 'end call', 'end the call'].includes(query.toLowerCase())) {
-                    endConversation();
-                    return;  // Exit early if the command is to end the conversation
-                }
-        
-                // Send the query to the Flask server
+        });
+
+        stopBtn.addEventListener('click', endConversation);
+
+        recognition.addEventListener('result', (event) => {
+            const query = event.results[0][0].transcript;
+            queryOutput.textContent = `You said: ${query}`;
+
+            // Check for exit commands
+            if (['stop', 'exit', 'end', 'end call', 'end the call'].includes(query.toLowerCase())) {
+                endConversation();
+                return;  // Exit early if the command is to end the conversation
+            }
+
+            // Send the query to the Flask server if conversation is active
+            if (conversationActive) {
                 fetch('/get_similar_queries', {
                     method: 'POST',
                     headers: {
@@ -160,23 +159,23 @@
                 .then(data => {
                     // Clear previous results
                     resultsContainer.innerHTML = '';
-        
+
                     // Display the results
                     data.forEach(result => {
                         const admissionDiv = document.createElement('div');
                         admissionDiv.classList.add('admission-result');
-                        
+
                         const admissionText = document.createElement('p');
                         admissionText.classList.add('admission-text');
                         admissionText.textContent = `Info: ${result.response}`;
-                        
+
                         const admissionInfo = document.createElement('p');
                         admissionInfo.classList.add('admission-info');
                         admissionInfo.textContent = `Details: ${result.context}`;
-        
+
                         admissionDiv.appendChild(admissionText);
                         admissionDiv.appendChild(admissionInfo);
-        
+
                         // Add a text-to-speech button for each result
                         const ttsBtn = document.createElement('button');
                         ttsBtn.classList.add('tts-btn'); // Added class for styling
@@ -186,11 +185,11 @@
                             speech.voice = selectedVoice; // Set the selected voice
                             window.speechSynthesis.speak(speech);
                         });
-        
+
                         admissionDiv.appendChild(ttsBtn);
                         resultsContainer.appendChild(admissionDiv);
                     });
-        
+
                     // Automatically display and speak the first admission info result
                     if (data.length > 0) {
                         const firstInfo = data[0].response;
@@ -200,28 +199,117 @@
                         queryOutput.innerHTML += `<br><br>AI Bot: ${firstInfo}`;
                     }
                 });
-            });
-        
-            recognition.addEventListener('end', () => {
-                if (conversationActive) {
-                    recognition.start(); // Restart recognition if conversation is active
-                }
-            });
-        
-            function endConversation() {
-                window.speechSynthesis.cancel();  // Stop any ongoing speech
-                const farewellMessage = "Thank you for your questions. Have a great day!";
-                
-                // Speak the farewell message
-                const farewellSpeech = new SpeechSynthesisUtterance(farewellMessage);
-                farewellSpeech.voice = selectedVoice; // Set the selected voice
-                window.speechSynthesis.speak(farewellSpeech);
-                
-                queryOutput.textContent = "Conversation ended.";  // Provide feedback
-                conversationActive = false; // Set conversation to inactive
-                recognition.stop(); // Stop recognition
             }
-        </script>    
-        
-    </body>
-    </html>
+        });
+
+        recognition.addEventListener('end', () => {
+            if (conversationActive) {
+                recognition.start(); // Restart recognition if conversation is active
+            }
+        });
+
+        function endConversation() {
+            window.speechSynthesis.cancel();  // Stop any ongoing speech
+            const farewellMessage = "Have a great day!";
+
+            // Speak the farewell message
+            const farewellSpeech = new SpeechSynthesisUtterance(farewellMessage);
+            farewellSpeech.voice = selectedVoice; // Set the selected voice
+            window.speechSynthesis.speak(farewellSpeech);
+
+            queryOutput.textContent = "Conversation ended.";  // Provide feedback
+            conversationActive = false; // Set conversation to inactive
+            recognition.stop(); // Stop recognition
+
+            setTimeout(askWhatsApp, 2000); // Call the function to ask for WhatsApp details
+        }
+
+        function askWhatsApp() {
+            const askWhatsAppMessage = "Do you want me to send the university details to your WhatsApp?";
+            const askWhatsAppSpeech = new SpeechSynthesisUtterance(askWhatsAppMessage);
+            askWhatsAppSpeech.voice = selectedVoice;
+            window.speechSynthesis.speak(askWhatsAppSpeech);
+
+            recognition.start(); // Start listening for the user's response
+
+            // Clear previous recognition result listener to avoid interference
+            recognition.onresult = (event) => {
+                const response = event.results[0][0].transcript.toLowerCase();
+
+                // Handle the response based on the user's input
+                if (response.includes('yes send the details') || response.includes('yes')) {
+                    recognition.stop();
+
+                    setTimeout(sendYes, 2000); // Call the function to ask for WhatsApp details
+                    // recognition.start(); // Start listening for the WhatsApp number
+                } else if (response.includes('no')) {
+                    const thankYouMessage = "Okay, thank you for your time!";
+                    const thankYouSpeech = new SpeechSynthesisUtterance(thankYouMessage);
+                    thankYouSpeech.voice = selectedVoice;
+                    window.speechSynthesis.speak(thankYouSpeech);
+                } else {
+                    const invalidResponseMessage = "I didn't understand that. Please answer yes or no.";
+                    const invalidResponseSpeech = new SpeechSynthesisUtterance(invalidResponseMessage);
+                    invalidResponseSpeech.voice = selectedVoice;
+                    window.speechSynthesis.speak(invalidResponseSpeech);
+
+                    // Restart recognition for the user to try again
+                    recognition.stop(); // Stop current recognition
+                    // recognition.start(); // Start listening again
+                }
+            };
+        }
+
+        function sendYes(){
+            // If the user said "yes," ask for WhatsApp number
+            const askNumberMessage = "Please provide your WhatsApp number with the country code.";
+            const askNumberSpeech = new SpeechSynthesisUtterance(askNumberMessage);
+            askNumberSpeech.voice = selectedVoice;
+            window.speechSynthesis.speak(askNumberSpeech);
+            
+            recognition.start(); // Start listening for the user's response
+
+            // Start listening for the WhatsApp number
+            recognition.onresult = (event) => {
+                // recognition.stop(); // Stop the current recognition
+                const whatsappNumber = event.results[0][0].transcript;
+                
+                const ty = "Thanks for providing number."+whatsappNumber;
+                const tys = new SpeechSynthesisUtterance(ty);
+                tys.voice = selectedVoice;
+                window.speechSynthesis.speak(tys);
+                sendWhatsAppDetails(whatsappNumber); // Send the number to the server
+            };
+        }
+
+        function sendWhatsAppDetails(whatsappNumber) {
+            fetch('/send_whatsapp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Change to JSON
+                },
+                body: JSON.stringify({ whatsapp_number: whatsappNumber }) // Send JSON data
+            })
+            .then(response => {
+                if (response.ok) {
+                    const confirmationMessage = "Details has been sent successfully!";
+                    const confirmationSpeech = new SpeechSynthesisUtterance(confirmationMessage);
+                    confirmationSpeech.voice = selectedVoice;
+                    window.speechSynthesis.speak(confirmationSpeech);
+                } else {
+                    const errorMessage = "There was an error sending your WhatsApp number.";
+                    const errorSpeech = new SpeechSynthesisUtterance(errorMessage);
+                    errorSpeech.voice = selectedVoice;
+                    window.speechSynthesis.speak(errorSpeech);
+                }
+            })
+            .catch(error => {
+                const errorMessage = "An unexpected error occurred.";
+                const errorSpeech = new SpeechSynthesisUtterance(errorMessage);
+                errorSpeech.voice = selectedVoice;
+                window.speechSynthesis.speak(errorSpeech);
+            });
+        }
+    </script>
+</body>
+</html>
